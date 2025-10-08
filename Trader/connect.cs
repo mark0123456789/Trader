@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace Trader
 {
-    internal class connect
+    internal class Connect
     {
         public MySqlConnection _Connection;
 
@@ -18,15 +18,16 @@ namespace Trader
 
         private String _Connectionstring;
 
-        public Connect() {
-         _host = "localhost";
-        _host = "trader";
+        public Connect() 
+        {
+             _host = "localhost";
+            _host = "trader";
             _user = "root";
             _password = "";
         
             _Connectionstring = $"SERVER={_host};DATABASE={_db};UID={_user},PASSWORD={_password};SslMode=None";
 
-            _Connection = new MySqlConnection(_host);
+            _Connection = new MySqlConnection(_Connectionstring);
         }
     }
 }
