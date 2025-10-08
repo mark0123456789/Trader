@@ -37,11 +37,12 @@ namespace Trader
             conn._Connection.Close();    
         
         return new { message = "sikeres hozzáadás."};
+
             }
-            catch (Exception)
+            catch (System.Exception ex)
             {
 
-                throw;
+               return new { message = ex.Message };
             }
         }
     }
