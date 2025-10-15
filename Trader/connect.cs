@@ -9,25 +9,25 @@ namespace Trader
 {
     internal class Connect
     {
-        public MySqlConnection _Connection;
+        public MySqlConnection _connection;
 
-        private String _host;
-        private String _db;
-        private String _user;
-        private String _password;
+        private string _host;
+        private string _db;
+        private string _user;
+        private string _password;
 
-        private String _Connectionstring;
-
-        public Connect() 
+        private string _connectionString;
+        public Connect()
         {
-             _host = "localhost";
-            _host = "trader";
+            _host = "localhost";
+            _db = "trader";
             _user = "root";
             _password = "";
-        
-            _Connectionstring = $"SERVER={_host};DATABASE={_db};UID={_user},PASSWORD={_password};SslMode=None";
 
-            _Connection = new MySqlConnection(_Connectionstring);
+            _connectionString = $"SERVER={_host};DATABASE={_db};UID={_user};PASSWORD={_password};SslMode=None";
+
+            _connection = new MySqlConnection(_connectionString);
         }
+
     }
 }

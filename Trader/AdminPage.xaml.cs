@@ -15,29 +15,18 @@ using System.Windows.Shapes;
 
 namespace Trader
 {
-    public partial class loginpage : Page
+    /// <summary>
+    /// Interaction logic for AdminPage.xaml
+    /// </summary>
+    public partial class AdminPage : Page
     {
         private readonly DatabaseStatemantes _databaseStatements = new DatabaseStatemantes();
         private readonly MainWindow _mainWindow;
-        public loginpage(MainWindow mainWindow)
+        public AdminPage(MainWindow mainWindow)
         {
             InitializeComponent();
             _mainWindow = mainWindow;
-        }
-
-        private void logButton_Click(object sender, RoutedEventArgs e)
-        {
-            var user = new
-            {
-                Name = userNameTextBox.Text,
-                Pass = userPasswordTextBox1.Password
-            };
-            MessageBox.Show(_databaseStatements.LoginUser(user).ToString());
-        }
-
-        private void regLink_Click(object sender, RoutedEventArgs e)
-        {
-            _mainWindow.StartWindow.Navigate(new Page1(_mainWindow));
+            userDataGrid.ItemsSource = _databaseStatements.userlist();
         }
     }
 }

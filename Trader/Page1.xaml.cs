@@ -20,31 +20,36 @@ namespace Trader
     /// </summary>
     public partial class Page1 : Page
     {
-        private readonly DatabaseStatemantes db = new DatabaseStatemantes();
-        public Page1()
+        private readonly DatabaseStatemantes _databaseStatements = new DatabaseStatemantes();
+        private readonly MainWindow _mainWindow;
+        public Page1(MainWindow mainWindow)
         {
             InitializeComponent();
+            _mainWindow = mainWindow;
         }
 
-        private void RegButton_Click(object sender, RoutedEventArgs e)
+        private void regButton_Click(object sender, RoutedEventArgs e)
         {
-            if (UserPassworTextbox1.Password == userPassordTextbox2.Password)
+            if (userPasswordTextBox1.Password == userPasswordTextBox2.Password)
             {
                 var user = new
                 {
-                    username = UsernameTextbox.Text,
-                    password = userPassordTextbox2.Password,
-                    fullname = userFullnameTextbox.Text,
-                    salt = "",
-                    Email = UserEmailTextbox.Text
+                    UserName = userNameTextBox.Text,
+                    FullName = userFullNameTextBox.Text,
+                    UserPassword = userPasswordTextBox1.Password,
+                    Salt = "",
+                    Email = userEmailTextBox.Text
+
                 };
 
-                MessageBox.Show(db.addNewUser(user).ToString());
+                MessageBox.Show(_databaseStatements.AddNewUser(user).ToString());
+                _mainWindow.StartWindow.Navigate(new LoginPage(_mainWindow));
             }
             else
             {
-                MessageBox.Show("eltérő jelszavak");
+                MessageBox.Show("Eltérő jelszavak.");
             }
+
         }
     }
 }
