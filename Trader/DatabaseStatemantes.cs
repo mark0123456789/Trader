@@ -47,6 +47,10 @@ namespace Trader
 
         public object LoginUser(object user)
         {
+            try
+            {
+
+
             conn._connection.Open();
 
             string sql = "SELECT * FROM users WHERE UserName = @username AND Password = @password";
@@ -64,10 +68,19 @@ namespace Trader
 
             conn._connection.Close();
             return isRegistered;
+            }
+            catch (System.Exception ex)
+            {
+                return new { message = ex.Message };
+            }
         }
 
         public DataView userlist() 
         {
+            try
+            {
+
+
             conn._connection.Open();
 
             string sql = "SELECT * FROM users ";
@@ -83,6 +96,12 @@ namespace Trader
             conn._connection.Close();
 
             return dt.DefaultView;
+            }
+            catch (System.Exception ex)
+            {
+
+                return null;
+            }
         }
     }
 }
