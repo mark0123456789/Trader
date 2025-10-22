@@ -57,25 +57,32 @@ namespace Trader
 
             conn._connection.Open();
 
-            string sql = "SELECT * FROM users WHERE UserName = @username AND Password = @password";
+            string sql = "SELECT * FROM users WHERE UserName = @username;";
 
             MySqlCommand cmd = new MySqlCommand(sql, conn._connection);
 
             var logUser = user.GetType().GetProperties();
 
             cmd.Parameters.AddWithValue("@username", logUser[0].GetValue(user));
-            cmd.Parameters.AddWithValue("@password", logUser[1].GetValue(user));
+          //  cmd.Parameters.AddWithValue("@password", logUser[1].GetValue(user));
 
             MySqlDataReader reader = cmd.ExecuteReader();
 
-            object isRegistered = reader.Read() ? new { message = "Regisztrált" } : new { message = "Nem regisztrált" };
+                if (reader.Read())
+                {
 
+                    string storedhash = reader.GetString(3);
+                    string storedsalt = reader.GetString(4);
+                    string comutehash = computeHmacSha256(logUser[2].GetValue(user).ToString(), storedsalt);
+
+                    return storedhash == comutehash;
+                }
             conn._connection.Close();
-            return isRegistered;
+              
             }
             catch (System.Exception ex)
             {
-                return new { message = ex.Message };
+                return false;
             }
         }
 
