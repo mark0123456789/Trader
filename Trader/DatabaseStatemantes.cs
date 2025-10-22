@@ -20,17 +20,20 @@ namespace Trader
             try
             {
                 conn._connection.Open();
+                var newUser = user.GetType().GetProperties();
+
+                string salt = generatesalt();
+            
+                string Hashedpassword = computeHmacSha256(newUser[2].GetValue(user).ToString(),salt);
 
                 string sql = "INSERT INTO `users`(`UserName`, `FullName`, `Password`, `Salt`, `Email`) VALUES (@username,@fullname,@password,@salt,@email)";
 
-                MySqlCommand cmd = new MySqlCommand(sql, conn._connection);
-
-                var newUser = user.GetType().GetProperties();
+                MySqlCommand cmd = new MySqlCommand(sql, conn._connection);     
 
                 cmd.Parameters.AddWithValue("@username", newUser[0].GetValue(user));
                 cmd.Parameters.AddWithValue("@fullname", newUser[1].GetValue(user));
-                cmd.Parameters.AddWithValue("@password", newUser[2].GetValue(user));
-                cmd.Parameters.AddWithValue("@salt", newUser[3].GetValue(user));
+                cmd.Parameters.AddWithValue("@password",Hashedpassword);
+                cmd.Parameters.AddWithValue("@salt",salt);
                 cmd.Parameters.AddWithValue("@email", newUser[4].GetValue(user));
 
                 cmd.ExecuteNonQuery();
