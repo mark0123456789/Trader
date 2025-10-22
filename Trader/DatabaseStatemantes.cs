@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
@@ -101,6 +102,27 @@ namespace Trader
             {
 
                 return null;
+            }
+        }
+        public string generatesalt() 
+        {
+
+            byte[] salt = new byte[16];
+
+            using (var rnd = RandomNumberGenerator.Create()) 
+            {           
+                rnd.GetBytes(salt);           
+            }
+        
+            return Convert.ToBase64String(salt);
+        }
+
+        public string computeHmacSha256(string password, string salt) 
+        {
+            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(salt))) 
+            {
+                byte[] hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(hash);
             }
         }
     }
