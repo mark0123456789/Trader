@@ -43,7 +43,7 @@ namespace Trader
                 };
 
                 MessageBox.Show(_databaseStatements.AddNewUser(user).ToString());
-                _mainWindow.StartWindow.Navigate(new LoginPage(_mainWindow));
+                _mainWindow.StartWindow.Navigate(new loginpage(_mainWindow));
             }
             else
             {

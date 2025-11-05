@@ -49,41 +49,39 @@ namespace Trader
 
         }
 
-        public object LoginUser(object user)
+        public bool LoginUser(object user)
         {
             try
             {
+                conn._connection.Open();
 
+                string sql = "SELECT * FROM users WHERE UserName = @username;";
 
-            conn._connection.Open();
+                MySqlCommand cmd = new MySqlCommand(sql, conn._connection);
 
-            string sql = "SELECT * FROM users WHERE UserName = @username;";
+                var logUser = user.GetType().GetProperties();
 
-            MySqlCommand cmd = new MySqlCommand(sql, conn._connection);
+                cmd.Parameters.AddWithValue("@username", logUser[0].GetValue(user));
 
-            var logUser = user.GetType().GetProperties();
-
-            cmd.Parameters.AddWithValue("@username", logUser[0].GetValue(user));
-          //  cmd.Parameters.AddWithValue("@password", logUser[1].GetValue(user));
-
-            MySqlDataReader reader = cmd.ExecuteReader();
+                MySqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.Read())
                 {
+                    string storedHash = reader.GetString(3);
+                    string storedSalt = reader.GetString(4);
+                    string computeHash = computeHmacSha256(logUser[1].GetValue(user).ToString(), storedSalt);
+                    conn._connection.Close();
 
-                    string storedhash = reader.GetString(3);
-                    string storedsalt = reader.GetString(4);
-                    string comutehash = computeHmacSha256(logUser[2].GetValue(user).ToString(), storedsalt);
-
-                    return storedhash == comutehash;
+                    return storedHash == computeHash;
                 }
-            conn._connection.Close();
-              
+                conn._connection.Close();
+                return false;
             }
-            catch (System.Exception ex)
+            catch
             {
                 return false;
             }
+
         }
 
         public DataView userlist() 
@@ -94,7 +92,7 @@ namespace Trader
 
             conn._connection.Open();
 
-            string sql = "SELECT * FROM users ";
+            string sql = "SELECT `Username`, `Fullname`, `PASSWORD`, `Email`, `RegDate` FROM `users` ";
 
             MySqlCommand cmd = new MySqlCommand(sql,conn._connection);
 
@@ -108,12 +106,14 @@ namespace Trader
 
             return dt.DefaultView;
             }
-            catch (System.Exception ex)
+            catch (Exception)
             {
 
                 return null;
             }
         }
+
+        public 
         public string generatesalt() 
         {
 
@@ -135,5 +135,7 @@ namespace Trader
                 return Convert.ToBase64String(hash);
             }
         }
+
+
     }
 }
